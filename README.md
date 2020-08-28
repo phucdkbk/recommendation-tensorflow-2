@@ -6,8 +6,11 @@ This is implementation for some recommendation algorithms using tensorflow 2:
     - NAIS: Neural Attentive Item Similarity Model for Recommendation, https://arxiv.org/pdf/1809.07053.pdf
 
 The implementation uses ideas from paper:
+
     - BPR: Bayesian Personalized Ranking from Implicit Feedback https://arxiv.org/ftp/arxiv/papers/1205/1205.2618.pdf
+    
 for pair-wise loss. And using confidence for implicit feedback from paper:
+
     - Collaborative Filtering for Implicit Feedback Datasets: http://yifanhu.net/PUB/cf.pdf
 
 
