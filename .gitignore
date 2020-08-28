@@ -1,3 +1,6 @@
 ### notebook ###
 *-checkpoint.ipynb
 
+### pycharm ###
+*.xml
+
