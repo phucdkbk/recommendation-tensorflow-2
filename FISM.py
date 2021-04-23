@@ -16,7 +16,7 @@ class FISM(Model):
         self.beta = args['beta']
         self.gamma = args['gamma']
         self.lambda_ = args['lambda_']
-        self.verbose = args['verborse']
+        self.verbose = args['verbose']
         self.num_items = args['num_items']
         self.num_users = args['num_users']
         self.confidence_factor = args['confidence_factor']
@@ -246,7 +246,7 @@ if __name__ == '__main__':
     args['beta'] = 0.0005
     args['gamma'] = 0.000
     args['lambda_'] = 0.000
-    args['verborse'] = 1
+    args['verbose'] = 1
     args['num_items'] = data.num_items
     args['num_users'] = data.num_users
     args['confidence_factor'] = 1

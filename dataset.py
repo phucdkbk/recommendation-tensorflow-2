@@ -3,6 +3,19 @@ import pandas as pd
 from tqdm import tqdm
 
 
+def get_user_description(rated_items, item_id):
+    if rated_items.__contains__(item_id):
+        rated_items.remove(item_id)
+    return list(rated_items)
+
+
+def padding_user_description(batch_user_descriptions, mask, max_len):
+    result = np.zeros([len(batch_user_descriptions), max_len], dtype=np.int32) + mask
+    for idx, user_des in enumerate(batch_user_descriptions):
+        result[idx][0:len(user_des)] = user_des
+    return result
+
+
 class DataSet:
 
     def __init__(self, train_file, test_file, negative_sample=3, batch_size=64):
@@ -38,7 +51,7 @@ class DataSet:
         rated_data = self.get_rated_data()
         np.random.shuffle(rated_data)
         self.all_train_data = self.negative_sampling(rated_data)
-        self.num_batch = self.all_train_data[0].__len__()//self.batch_size
+        self.num_batch = self.all_train_data[0].__len__() // self.batch_size
 
     def get_batch(self, i):
         user_ids, item_ids, labels, ratings = self.all_train_data
@@ -54,11 +67,11 @@ class DataSet:
             user_id = user_ids[idx]
             item_id = item_ids[idx]
             rated_items = self.user_rated_items[user_id].copy()
-            user_description = self.get_user_description(rated_items, item_id)
+            user_description = get_user_description(rated_items, item_id)
             batch_user_descriptions.append(user_description)
             batch_num_items.append(user_description.__len__())
         max_user_des = max(batch_num_items)
-        batch_user_descriptions = self.padding_user_description(batch_user_descriptions, mask, max_user_des)
+        batch_user_descriptions = padding_user_description(batch_user_descriptions, mask, max_user_des)
         return (batch_user_descriptions,
                 np.array(batch_user_ids, dtype=np.int32),
                 np.array(batch_item_ids, dtype=np.int32),
@@ -98,19 +111,8 @@ class DataSet:
                 ratings.append(0)
         return user_ids, item_ids, labels, ratings
 
-    def get_user_description(self, rated_items, item_id):
-        if rated_items.__contains__(item_id):
-            rated_items.remove(item_id)
-        return list(rated_items)
 
-    def padding_user_description(self, batch_user_descriptions, mask, max_len):
-        result = np.zeros([len(batch_user_descriptions), max_len], dtype=np.int32) + mask
-        for idx, user_des in enumerate(batch_user_descriptions):
-            result[idx][0:len(user_des)] = user_des
-        return result
-
-
-if __name__ == '__main__':
+def test_dataset():
     # base_folder = 'F:\\Projects\\Train\\Python\\recommendation-tensorflow-2\\Data\\'
     base_folder = 'Data/'
     dataset = DataSet(base_folder + 'train.csv', base_folder + 'test.csv', batch_size=512, negative_sample=1)
@@ -118,3 +120,8 @@ if __name__ == '__main__':
     # all_batch = dataset.generate_train_data()
     for i in tqdm(range(dataset.num_batch)):
         user_descriptions, user_ids, item_ids, num_items, labels, ratings = dataset.get_batch(i)
+
+
+if __name__ == '__main__':
+    test_dataset()
+
